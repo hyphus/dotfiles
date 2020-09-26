@@ -5,7 +5,7 @@ if [ -f /etc/os-release ]; then
 
     if [ "$ID_LIKE" == "debian" ]; then
         sudo apt update -y && \
-            apt install -y \
+            sudo apt install -y \
                 apt-transport-https \
                 ca-certificates \
                 curl \
