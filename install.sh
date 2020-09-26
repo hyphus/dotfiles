@@ -15,7 +15,8 @@ if [ -f /etc/os-release ]; then
                 htop \
                 python3 \
                 python3-pip \
-                tree
+                tree \
+                git
 
         curl -fsSL https://get.docker.com | sudo bash
     fi
@@ -24,3 +25,6 @@ fi
 cp ./.bash_profile $HOME/.bash_profile
 cp ./.vimrc $HOME/.vimrc
 cp ./.tmux.conf $HOME/.tmux.conf
+
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+$HOME/.tmux/plugins/tpm/bin/install_plugins
