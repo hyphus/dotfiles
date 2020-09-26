@@ -27,4 +27,3 @@ cp ./.vimrc $HOME/.vimrc
 cp ./.tmux.conf $HOME/.tmux.conf
 
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-$HOME/.tmux/plugins/tpm/bin/install_plugins
