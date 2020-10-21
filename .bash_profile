@@ -1,5 +1,9 @@
 # [09/25/20 16:41:28] user@host ~
-PS1='[\D{%m/%d/%y %T}] \u@\h \w\n\$ '
+if [[ $EUID -eq 0 ]]; then
+    PS1='[\D{%m/%d/%y %T}] \[\e[31m\]\u@\h\[\e[m\] \w\n\$ '
+else
+    PS1='[\D{%m/%d/%y %T}] \[\e[32m\]\u@\h\[\e[m\] \w\n\$ '
+fi
 
 function random {
     openssl rand -base64 $1
