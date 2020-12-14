@@ -38,7 +38,6 @@ set shiftwidth=4                                                        " how ma
 set showmatch                                                           " show matching brackets.
 set showmode                                                            " show the current mode
 set softtabstop=4                                                       " let backspace delete indent
-set spell                                                               " enable spell checking
 set tabstop=4                                                           " how many spaces for a tab
 set textwidth=250                                                       " we like 250 columns
 set undolevels=1000                                                     " 1000 undos
