@@ -1,5 +1,20 @@
 [[ -s "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
 
+HISTSIZE=900000
+HISTFILESIZE=$HISTSIZE
+HISTCONTROL=ignorespace:ignoredups
+_bash_history_sync() {
+    builtin history -a
+    HISTFILESIZE=$HISTSIZE
+    builtin history -c
+    builtin history -r
+}
+history() {
+    _bash_history_sync
+    builtin history "$@"
+}
+PROMPT_COMMAND=_bash_history_sync
+
 #┌─[12/25/20 21:08:33] user@host ~
 #└╼ $
 if [[ $EUID -eq 0 ]]; then
