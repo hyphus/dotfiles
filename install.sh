@@ -18,12 +18,15 @@ if [ -f /etc/os-release ]; then
                 tree \
                 git \
                 jq \
-                net-tools 
+                net-tools \
+                vim
 
         curl -fsSL https://get.docker.com | sudo bash
         sudo usermod -aG docker ubuntu
     fi
 fi
+
+vim +'PlugInstall --sync' +qall &> /dev/null
 
 cp ./.bash_profile $HOME/.bash_profile
 cp ./.vimrc $HOME/.vimrc
