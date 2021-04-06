@@ -49,7 +49,7 @@ set whichwrap=h,l,<,>
 
 " undo
 if !isdirectory($HOME."/.vim/undo")
-    call mkdir($HOME."/.vim/undo", "", 0700)
+    call mkdir($HOME."/.vim/undo", "p", 0700)
 endif
 set undodir=$HOME/.vim/undo
 set undofile
