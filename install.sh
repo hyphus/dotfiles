@@ -29,11 +29,12 @@ if [ -f /etc/os-release ]; then
         sudo usermod -aG docker ubuntu
 
         # FPP - used with tmux
-        cd /tmp/
+        pushd /tmp/
         git clone --depth 1 https://github.com/facebook/PathPicker.git
         cd PathPicker/debian
         ./package.sh
-        dpkg -i ../pathpicker*.deb
+        sudo dpkg -i ../pathpicker*.deb
+        popd
     fi
 fi
 
