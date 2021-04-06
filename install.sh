@@ -5,6 +5,7 @@ set -x
 if [ -f /etc/os-release ]; then
     . /etc/os-release
 
+    # TODO: Support macOS
     if [ "$ID_LIKE" == "debian" ]; then
         sudo apt update -y && \
             sudo apt install -y \
@@ -23,12 +24,18 @@ if [ -f /etc/os-release ]; then
                 net-tools \
                 vim
 
+        # Docker
         curl -fsSL https://get.docker.com | sudo bash
         sudo usermod -aG docker ubuntu
+
+        # FPP - used with tmux
+        cd /tmp/
+        git clone --depth 1 https://github.com/facebook/PathPicker.git
+        cd PathPicker/debian
+        ./package.sh
+        dpkg -i ../pathpicker*.deb
     fi
 fi
-
-
 
 cp ./.bash_profile $HOME/.bash_profile
 cp ./.vimrc $HOME/.vimrc
@@ -41,7 +48,7 @@ sudo cp ./.tmux.conf /root/.tmux.conf
 vim +'PlugInstall --sync' +qall &> /dev/null
 
 # TPM install requires tmux to be running
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 tmux start-server
 tmux new-session -d
 sleep 1 # to give new-session time to init
