@@ -1,5 +1,7 @@
 #/bin/bash
 
+set -x
+
 if [ -f /etc/os-release ]; then
     . /etc/os-release
 
@@ -26,7 +28,7 @@ if [ -f /etc/os-release ]; then
     fi
 fi
 
-vim +'PlugInstall --sync' +qall &> /dev/null
+
 
 cp ./.bash_profile $HOME/.bash_profile
 cp ./.vimrc $HOME/.vimrc
@@ -36,5 +38,13 @@ sudo cp ./.bash_profile /root/.bash_profile
 sudo cp ./.vimrc /root/.vimrc
 sudo cp ./.tmux.conf /root/.tmux.conf
 
+vim +'PlugInstall --sync' +qall &> /dev/null
+
+# TPM install requires tmux to be running
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+tmux start-server
+tmux new-session -d
+sleep 1 # to give new-session time to init
+tmux source ~/.tmux.conf
 ~/.tmux/plugins/tpm/scripts/install_plugins.sh
+tmux kill-server
