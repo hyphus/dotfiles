@@ -2,10 +2,19 @@
 
 set -x
 
-if [ -f /etc/os-release ]; then
+if [[ $OSTYPE == 'darwin'* ]]; then 
+    # TODO: Brew and other things
+
+    cat << EOF >> $HOME/.ssh/config
+Host *
+    ForwardX11 yes
+    ForwardX11Trusted yes
+    ServerAliveInterval 60
+EOF
+
+elif [ -f /etc/os-release ]; then
     . /etc/os-release
 
-    # TODO: Support macOS
     if [ "$ID_LIKE" == "debian" ]; then
         sudo apt update -y && \
             sudo apt install -y \
@@ -22,7 +31,10 @@ if [ -f /etc/os-release ]; then
                 git \
                 jq \
                 net-tools \
-                vim
+                vim \
+                xclip
+
+        echo "alias pbcopy='xclip -sel clip'" >> $HOME/.bash_aliases
 
         # Docker
         curl -fsSL https://get.docker.com | sudo bash
