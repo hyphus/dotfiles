@@ -32,9 +32,13 @@ elif [ -f /etc/os-release ]; then
                 jq \
                 net-tools \
                 vim \
-                xclip
+                xclip \
+                unzip
 
         echo "alias pbcopy='xclip -sel clip'" >> $HOME/.bash_aliases
+
+        # x11
+        sudo sed -i 's/#X11Forwarding\ no/X11Forwarding\ yes/;s/#X11UseLocalhost/X11UseLocalhost/;s/#AddressFamily\ any/AddressFamily\ inet/' /etc/ssh/sshd_config
 
         # Docker
         curl -fsSL https://get.docker.com | sudo bash
