@@ -97,3 +97,4 @@ else
         PS1="${USER_PS1}"
     fi
 fi
+
