@@ -56,8 +56,8 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 
     # Rosetta Specific
     if [[ "$(uname -m)" == "x86_64" ]]; then
-        export PATH="/usr/local/sbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-
+        export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        
         # (x86_x64) [09/25/20 16:41:28] user@host ~
         if [[ $EUID -eq 0 ]]; then
             PS1='┌─\[\e[1;36m(x86_x64)\] \[\e[0m\][\D{%m/%d/%y %T}] \[\e[31m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\$\[\e[0m\] '
@@ -66,9 +66,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
         fi
     # General
     else
-        export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-
-
+        export PATH="/usr/local/sbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         if [[ $EUID -eq 0 ]]; then
             PS1="${ROOT_PS1}"
         else
