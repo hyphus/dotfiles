@@ -7,7 +7,11 @@ fi
 
 # Functions
 function random {
-    openssl rand -base64 "$1"
+    if [ -z "${1}" ]; then 
+        openssl rand -base64 32
+    else 
+        openssl rand -base64 "$1"
+    fi
 }
 
 function lower {
