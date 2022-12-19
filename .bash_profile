@@ -59,7 +59,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     }
 
     # Rosetta Specific
-    if [[ "$(uname -m)" == "x86_64" ]]; then
+    if [[ "$(uname -m)" == "x86_64" && "$(sysctl -n machdep.cpu.brand_string)" = Apple* ]]; then
         export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         
         # (x86_x64) [09/25/20 16:41:28] user@host ~
@@ -93,12 +93,20 @@ if [[ $OSTYPE == 'darwin'* ]]; then
         /opt/X11/bin/xhost +localhost >/dev/null
     fi
 else
-    alias pbcopy='xclip -sel clip'
-    
+    alias pbcopy="xclip -sel clip"
+    alias python="/usr/bin/python3"
+    alias pip="/usr/bin/pip3"
+    alias proxychains="/usr/bin/proxychains4 -q"
+
+    test -e "/usr/bin/aws_completer" && complete -C "/usr/bin/aws_completer" aws
+    if [ -f "etc/bash_completion" ]; then
+        # shellcheck source=/dev/null
+        . "/etc/bash_completion"
+    fi
+
     if [[ $EUID -eq 0 ]]; then
         PS1="${ROOT_PS1}"
     else
         PS1="${USER_PS1}"
     fi
 fi
-
