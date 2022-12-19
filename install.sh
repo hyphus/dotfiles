@@ -87,11 +87,14 @@ EOF
             /usr/sbin/softwareupdate --install-rosetta --agree-to-license
         fi
 
-# BUG: Something is up with subshells and sudo/askpass
-#         arch -x86_64 /bin/bash -l <<EOF
-# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-# /usr/local/bin/brew install "${BREW_FORMULAS[@]}"
-# EOF
+        # BUG: This fails with a strange sudo error when executing the curl output directly
+        arch -x86_64 /bin/bash -l <<EOF
+            curl -o /tmp/install.sh -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh
+            chmod +x /tmp/install.sh
+            /bin/bash -c /tmp/install.sh
+            /usr/local/bin/brew install ${BREW_FORMULAS[@]}
+EOF
+
     else
         /bin/bash "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         /usr/local/bin/brew install "${BREW_FORMULAS[@]}"
