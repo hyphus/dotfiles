@@ -107,15 +107,17 @@ EOF
     cp ./.vimrc "${HOME}/.vimrc"
     cp ./.tmux.conf "${HOME}/.tmux.conf"
 
-    sudo cp ./.bash_profile /var/root/.bash_profile
-    sudo cp ./.vimrc /var/root/.vimrc
-    sudo cp ./.tmux.conf /var/root/.tmux.conf
+    sudo -A cp ./.bash_profile /var/root/.bash_profile
+    sudo -A cp ./.vimrc /var/root/.vimrc
+    sudo -A cp ./.tmux.conf /var/root/.tmux.conf
     
     plutil -convert binary1 ./iterm/com.googlecode.iterm2.plist
     cp ./iterm/com.googlecode.iterm2.plist "${HOME}/Library/Preferences/"
 
-    sudo chsh -s /bin/bash "${USER}"
-
+    # Set shells for root and user
+    sudo -A chsh -s /bin/bash
+    sudo -A chsh -s /bin/bash "${USER}"
+    
     # Cleanup
     rm /tmp/pw.sh
 
