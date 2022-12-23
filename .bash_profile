@@ -60,7 +60,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 
     # Rosetta Specific
     if [[ "$(uname -m)" == "x86_64" && "$(sysctl -n machdep.cpu.brand_string)" = Apple* ]]; then
-        export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
         
         # (x86_x64) [09/25/20 16:41:28] user@host ~
         if [[ $EUID -eq 0 ]]; then
@@ -70,7 +70,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
         fi
     # General
     else
-        export PATH="/usr/local/sbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        export PATH="/opt/homebrew/sbin:/opt/homebrew/bin:$PATH"
         if [[ $EUID -eq 0 ]]; then
             PS1="${ROOT_PS1}"
         else
