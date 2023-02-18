@@ -68,7 +68,7 @@ EOF
     read -rs PASS
     cat << EOF >> "/tmp/pw.sh"
 #!/bin/bash
-echo $PASS
+echo \"$PASS\"
 EOF
     
     chmod +x /tmp/pw.sh
@@ -96,7 +96,7 @@ EOF
 EOF
 
     else
-        /bin/bash "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         /usr/local/bin/brew install "${BREW_FORMULAS[@]}"
         /usr/local/bin/brew install --cask "${BREW_CASKS[@]}"      
     fi
