@@ -26,6 +26,7 @@ function nocomment {
 HISTSIZE=900000
 HISTFILESIZE=$HISTSIZE
 HISTCONTROL=ignorespace:ignoredups
+HISTTIMEFORMAT="[%m/%d/%y %T] "
 
 _bash_history_sync() {
     builtin history -a
