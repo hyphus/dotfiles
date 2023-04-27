@@ -28,7 +28,6 @@ EOF
         bash
         bash-completion
         curl
-        docker
         grep
         htop
         jq
@@ -46,6 +45,7 @@ EOF
     BREW_CASKS=(
         alt-tab
         discord
+        docker
         firefox
         google-chrome
         gpg-suite
