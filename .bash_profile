@@ -88,7 +88,8 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     # Aliases
     alias tf='$(brew --prefix)/bin/terraform'
     alias proxychains='$(brew --prefix)/proxychains4 -q'
-
+    alias netstat='lsof -i -nPR'
+    
     if pgrep -x "Xquartz" >/dev/null; then
         /opt/X11/bin/xhost >/dev/null
         /opt/X11/bin/xhost +localhost >/dev/null
