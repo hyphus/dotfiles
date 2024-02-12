@@ -26,7 +26,8 @@ EOF
     BREW_FORMULAS=(
         awscli
         bash
-        bash-completion
+        bash-completion@2
+        coreutils
         curl
         grep
         htop

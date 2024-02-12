@@ -22,6 +22,16 @@ function nocomment {
   grep -v '^$\|^\s*\#' "$1"
 }
 
+function complete_me {
+    if [[ -r "$BREW_PREFIX/etc/profile.d/bash_completion.sh" ]]; then
+        # shellcheck source=/dev/null
+        . "$BREW_PREFIX/etc/profile.d/bash_completion.sh"
+    fi
+
+    # awscli completion doesn't work using the brew installed version
+    test -e "$BREW_PREFIX/bin/aws_completer" && complete -C "$BREW_PREFIX/bin/aws_completer" aws
+}
+
 # Sync history between shells
 HISTSIZE=900000
 HISTFILESIZE=$HISTSIZE
@@ -55,13 +65,16 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     # I want bash dammit
     export BASH_SILENCE_DEPRECATION_WARNING=1
 
+    BREW_PREFIX=$(brew --prefix)
+    export BREW_PREFIX
+
     function x86 {
         arch -x86_64 /bin/bash -l
     }
 
     # Rosetta Specific
     if [[ "$(uname -m)" == "x86_64" && "$(sysctl -n machdep.cpu.brand_string)" = Apple* ]]; then
-        export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
+        export PATH="$BREW_PREFIX/sbin:$BREW_PREFIX/bin:$BREW_PREFIX/opt/coreutils/libexec/gnubin:$BREW_PREFIX/opt/curl/bin:$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
         
         # (x86_x64) [09/25/20 16:41:28] user@host ~
         if [[ $EUID -eq 0 ]]; then
@@ -71,7 +84,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
         fi
     # General
     else
-        export PATH="/opt/homebrew/sbin:/opt/homebrew/bin:$PATH"
+        export PATH="/opt/homebrew/sbin:/opt/homebrew/bin:/opt/homebrew/opt/coreutils/libexec/gnubin:$BREW_PREFIX/opt/curl/bin:$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
         if [[ $EUID -eq 0 ]]; then
             PS1="${ROOT_PS1}"
         else
@@ -79,15 +92,12 @@ if [[ $OSTYPE == 'darwin'* ]]; then
         fi
     fi
 
-    complete -C "$(brew --prefix)/bin/aws_completer" aws
-    if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
-        # shellcheck source=/dev/null
-        . "$(brew --prefix)/etc/bash_completion"
-    fi
+    # Bash completion
+    complete_me
 
     # Aliases
-    alias tf='$(brew --prefix)/bin/terraform'
-    alias proxychains='$(brew --prefix)/proxychains4 -q'
+    alias tf='$BREW_PREFIX/bin/terraform'
+    alias proxychains='$BREW_PREFIX/bin/proxychains4 -q'
     alias netstat='lsof -i -nPR'
     
     if pgrep -x "Xquartz" >/dev/null; then
@@ -100,11 +110,8 @@ else
     alias pip="/usr/bin/pip3"
     alias proxychains="/usr/bin/proxychains4 -q"
 
-    test -e "/usr/bin/aws_completer" && complete -C "/usr/bin/aws_completer" aws
-    if [ -f "etc/bash_completion" ]; then
-        # shellcheck source=/dev/null
-        . "/etc/bash_completion"
-    fi
+    # Bash completion
+    complete_me
 
     if [[ $EUID -eq 0 ]]; then
         PS1="${ROOT_PS1}"
