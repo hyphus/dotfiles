@@ -99,6 +99,8 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     alias tf='$BREW_PREFIX/bin/terraform'
     alias proxychains='$BREW_PREFIX/bin/proxychains4 -q'
     alias netstat='lsof -i -nPR'
+    alias pip='$BREW_PREFIX/bin/pip3'
+    alias python='$BREW_PREFIX/bin/python3'
     
     if pgrep -x "Xquartz" >/dev/null; then
         /opt/X11/bin/xhost >/dev/null
