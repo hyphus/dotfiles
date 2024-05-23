@@ -102,8 +102,6 @@ EOF
         /usr/local/bin/brew install --cask "${BREW_CASKS[@]}"      
     fi
 
-    export PATH="/usr/local/sbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-
     cp ./.bash_profile "${HOME}/.bash_profile"
     cp ./.vimrc "${HOME}/.vimrc"
     cp ./.tmux.conf "${HOME}/.tmux.conf"
@@ -116,8 +114,9 @@ EOF
     cp ./iterm/com.googlecode.iterm2.plist "${HOME}/Library/Preferences/"
 
     # Set shells for root and user
-    sudo -A chsh -s /bin/bash
-    sudo -A chsh -s /bin/bash "${USER}"
+    echo "/opt/homebrew/bin/bash" | sudo -A tee -a /etc/shells
+    sudo -A chsh -s /opt/homebrew/bin/bash
+    sudo -A chsh -s /opt/homebrew/bin/bash "${USER}"
     
     # Cleanup
     rm /tmp/pw.sh
@@ -153,6 +152,7 @@ elif [ -f /etc/os-release ]; then
         sudo apt update -y
         sudo apt install -y \
             apt-transport-https \
+            bash-completion \
             ca-certificates \
             curl \
             gnupg-agent \
@@ -187,6 +187,8 @@ elif [ -f /etc/os-release ]; then
     sudo cp ./.vimrc /root/.vimrc
     sudo cp ./.tmux.conf /root/.tmux.conf
 fi
+
+mkdir -p "${HOME}/.config/bash"
 
 vim +'PlugInstall --sync' +qall &> /dev/null
 
