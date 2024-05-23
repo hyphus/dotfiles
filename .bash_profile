@@ -114,8 +114,12 @@ else
 fi
 
 # Load any machine specific configs
-if [ -d "${HOME}/.config/bash" ]; then
+CONFIG_DIR="${HOME}/.config/bash"
+if [ -d "$CONFIG_DIR" ] && [ "$(find "$CONFIG_DIR" | wc -l)" -ne 0 ]; then
+    for file in "${HOME}/.config/bash/"*; do
     # shellcheck disable=SC1090
-    source <(find "${HOME}/.config/bash/" -type f -exec cat {} +)
+    . "$file"
+    done
 fi
+
 
