@@ -69,7 +69,7 @@ EOF
     read -rs PASS
     cat << EOF >> "/tmp/pw.sh"
 #!/bin/bash
-echo \"$PASS\"
+echo $(printf "%q\n" "$PASS")
 EOF
     
     chmod +x /tmp/pw.sh
@@ -203,5 +203,7 @@ sleep 1 # to give new-session time to init
 tmux source "${HOME}/.tmux.conf"
 "${HOME}"/.tmux/plugins/tpm/scripts/install_plugins.sh
 tmux kill-server
+
+# TODO: copy vscode/settings.json to the right location
 
 echo "Done."
