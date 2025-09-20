@@ -115,11 +115,10 @@ fi
 
 # Load any machine specific configs
 CONFIG_DIR="${HOME}/.config/bash"
-if [ -d "$CONFIG_DIR" ] && [ "$(find "$CONFIG_DIR" | wc -l)" -ne 0 ]; then
+# shellcheck disable=SC2012
+if [ -d "$CONFIG_DIR" ] && [ "$(ls -A "$CONFIG_DIR" | wc -l)" -ne 0 ]; then
     for file in "${HOME}/.config/bash/"*; do
     # shellcheck disable=SC1090
     . "$file"
     done
 fi
-
-
