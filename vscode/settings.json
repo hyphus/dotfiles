@@ -1,45 +1,35 @@
 {
-    "security.workspace.trust.untrustedFiles": "open",
-    "[python]": {
-        "editor.formatOnType": true
-    },
-    "redhat.telemetry.enabled": false,
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "editor.formatOnSave": true,
-    "[terraform]": {
-        "editor.defaultFormatter": "hashicorp.terraform",
-        "editor.formatOnSave": false,
-        "editor.codeActionsOnSave": {
-            "source.formatAll.terraform": "explicit"
-        }
-    },
-    "[terraform-vars]": {
-        "editor.defaultFormatter": "hashicorp.terraform",
-        "editor.formatOnSave": false,
-        "editor.codeActionsOnSave": {
-            "source.formatAll.terraform": "explicit"
-        }
-    },
-    "files.associations": {
-        "*.tf": "terraform"
-    },
-    "git.openRepositoryInParentFolders": "always",
     "lldb.suppressUpdateNotifications": true,
-    "workbench.colorTheme": "Visual Studio Dark",
-    "groovyLint.fix.trigger": "onSave",
-    "terraform.languageServer.enable": true,
-    "powershell.codeFormatting.autoCorrectAliases": true,
+    "security.workspace.trust.enabled": false,
+    "telemetry.telemetryLevel": "off",
+    "[terraform-vars]": {
+        "editor.codeActionsOnSave": {
+            "source.formatAll.terraform": "explicit"
+        },
+        "editor.defaultFormatter": "hashicorp.terraform",
+        "editor.formatOnSave": false
+    },
+    "[terraform]": {
+        "editor.codeActionsOnSave": {
+            "source.formatAll.terraform": "explicit"
+        },
+        "editor.defaultFormatter": "hashicorp.terraform",
+        "editor.formatOnSave": false
+    },
     "[terraform][terraform-vars]": {
         "editor.codeActionsOnSave": {
             "source.formatAll.terraform": "explicit"
         }
     },
-    "editor.codeActionsOnSave": {},
-    "diffEditor.experimental.showMoves": true,
-    "powershell.promptToUpdatePowerShell": false,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "cSpell.userWords": [
-        "userdata"
+    "update.showReleaseNotes": false,
+    "workbench.colorTheme": "Visual Studio Dark",
+    "workbench.startupEditor": "none",
+    "autopep8.args": [
+        "--max-line-length",
+        "200"
     ],
+    "editor.inlayHints.enabled": "offUnlessPressed"
 }

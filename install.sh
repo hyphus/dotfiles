@@ -24,12 +24,14 @@ EOF
     fi
 
     BREW_FORMULAS=(
+        1password
         awscli
         bash
         bash-completion@2
         coreutils
         curl
         grep
+        home-assistant
         htop
         jq
         kubernetes-cli
@@ -45,6 +47,9 @@ EOF
     # These aren't needed for Rosetta
     BREW_CASKS=(
         alt-tab
+        brave-browser
+        burp-suite
+        diffusionbee
         discord
         docker
         firefox
@@ -52,13 +57,14 @@ EOF
         gpg-suite
         iterm2
         little-snitch
-        microsoft-remote-desktop
+        ollama-app
         rectangle
         signal
         slack
         spotify
         utm
         visual-studio-code
+        windows-app
         wireshark
         xquartz
     )
