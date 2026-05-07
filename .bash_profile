@@ -7,9 +7,9 @@ fi
 
 # Functions
 function random {
-    if [ -z "${1}" ]; then 
+    if [ -z "${1}" ]; then
         openssl rand -base64 32
-    else 
+    else
         openssl rand -base64 "$1"
     fi
 }
@@ -22,24 +22,29 @@ function nocomment {
   grep -v '^$\|^\s*\#' "$1"
 }
 
-# Sync history between shells
-HISTSIZE=900000
-HISTFILESIZE=$HISTSIZE
-HISTCONTROL=ignorespace:ignoredups
-HISTTIMEFORMAT="[%m/%d/%y %T] "
+# Bigger Bash history
+export HISTSIZE=200000
+export HISTFILESIZE=500000
+export HISTCONTROL=ignorespace:ignoredups
+export HISTTIMEFORMAT="[%m/%d/%y %T] "
 
-_bash_history_sync() {
+# Append instead of overwrite on shell exit
+shopt -s histappend
+
+# After each command:
+# - append this shell's new commands
+# - read commands appended by other shells
+__bash_history_sync() {
     builtin history -a
-    HISTFILESIZE=$HISTSIZE
-    builtin history -c
-    builtin history -r
-}
-history() {
-    _bash_history_sync
-    builtin history "$@"
+    builtin history -n
 }
 
-PROMPT_COMMAND=_bash_history_sync
+# Preserve existing PROMPT_COMMAND
+if [[ -n "$PROMPT_COMMAND" ]]; then
+    PROMPT_COMMAND="__bash_history_sync; $PROMPT_COMMAND"
+else
+    PROMPT_COMMAND="__bash_history_sync"
+fi
 
 # shellcheck source=/dev/null
 test -e "${HOME}/.cargo/env" && source "${HOME}/.cargo/env"
@@ -49,7 +54,7 @@ ROOT_PS1='┌─[\D{%m/%d/%y %T}] \[\e[31m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\
 USER_PS1='┌─[\D{%m/%d/%y %T}] \[\e[32m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\$\[\e[0m\] '
 
 # macOS specific
-if [[ $OSTYPE == 'darwin'* ]]; then 
+if [[ $OSTYPE == 'darwin'* ]]; then
     # I want bash dammit
     export BASH_SILENCE_DEPRECATION_WARNING=1
 
@@ -64,7 +69,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 
     # Rosetta Specific
     if [[ "$(uname -m)" = "x86_64" && "$(sysctl -n machdep.cpu.brand_string)" = Apple* ]]; then
-        export PATH="/usr/local/bin:$PATH"    
+        export PATH="/usr/local/bin:$PATH"
         # (x86_x64) [09/25/20 16:41:28] user@host ~
         if [[ $EUID -eq 0 ]]; then
             PS1='┌─\[\e[1;36m(x86_x64)\] \[\e[0m\][\D{%m/%d/%y %T}] \[\e[31m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\$\[\e[0m\] '
@@ -95,7 +100,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     alias proxychains='$BREW_PREFIX/bin/proxychains4 -q'
     alias pip='$BREW_PREFIX/bin/pip3'
     alias python='$BREW_PREFIX/bin/python3'
-    
+
     if pgrep -x "Xquartz" >/dev/null; then
         /opt/X11/bin/xhost >/dev/null
         /opt/X11/bin/xhost +localhost >/dev/null
