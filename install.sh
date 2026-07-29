@@ -30,6 +30,7 @@ EOF
         bash-completion@2
         coreutils
         curl
+        fzf
         grep
         home-assistant
         htop
@@ -161,6 +162,7 @@ elif [ -f /etc/os-release ]; then
             bash-completion \
             ca-certificates \
             curl \
+            fzf \
             gnupg-agent \
             software-properties-common \
             tmux \

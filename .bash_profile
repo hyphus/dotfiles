@@ -5,6 +5,27 @@ if [ -f "${HOME}/.bashrc" ]; then
     . "${HOME}/.bashrc"
 fi
 
+# shell options
+shopt -s histappend
+shopt -s cmdhist
+shopt -s direxpand
+shopt -s globstar
+
+# Bigger Bash history
+export HISTSIZE=200000
+export HISTFILESIZE=500000
+export HISTCONTROL=ignoreboth:ignoredups
+export HISTIGNORE="ls:bg:fg:history:exit"
+export HISTTIMEFORMAT="[%m/%d/%y %T] "
+export PROMPT_COMMAND='history -a; history -n'
+
+# shellcheck source=/dev/null
+test -e "${HOME}/.cargo/env" && source "${HOME}/.cargo/env"
+
+# [09/25/20 16:41:28] user@host ~
+ROOT_PS1='┌─[\D{%m/%d/%y %T}] \[\e[31m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\$\[\e[0m\] '
+USER_PS1='┌─[\D{%m/%d/%y %T}] \[\e[32m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\$\[\e[0m\] '
+
 # Functions
 function random {
     if [ -z "${1}" ]; then
@@ -21,37 +42,6 @@ function lower {
 function nocomment {
   grep -v '^$\|^\s*\#' "$1"
 }
-
-# Bigger Bash history
-export HISTSIZE=200000
-export HISTFILESIZE=500000
-export HISTCONTROL=ignorespace:ignoredups
-export HISTTIMEFORMAT="[%m/%d/%y %T] "
-
-# Append instead of overwrite on shell exit
-shopt -s histappend
-
-# After each command:
-# - append this shell's new commands
-# - read commands appended by other shells
-__bash_history_sync() {
-    builtin history -a
-    builtin history -n
-}
-
-# Preserve existing PROMPT_COMMAND
-if [[ -n "$PROMPT_COMMAND" ]]; then
-    PROMPT_COMMAND="__bash_history_sync; $PROMPT_COMMAND"
-else
-    PROMPT_COMMAND="__bash_history_sync"
-fi
-
-# shellcheck source=/dev/null
-test -e "${HOME}/.cargo/env" && source "${HOME}/.cargo/env"
-
-# [09/25/20 16:41:28] user@host ~
-ROOT_PS1='┌─[\D{%m/%d/%y %T}] \[\e[31m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\$\[\e[0m\] '
-USER_PS1='┌─[\D{%m/%d/%y %T}] \[\e[32m\]\u@\h\[\e[m\] \w\n└╼ \[\e[90m\]\$\[\e[0m\] '
 
 # macOS specific
 if [[ $OSTYPE == 'darwin'* ]]; then
@@ -94,12 +84,15 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 
     # Common Paths
     export PATH="$BREW_PREFIX/bin:$BREW_PREFIX/sbin:$BREW_PREFIX/opt/coreutils/libexec/gnubin:$BREW_PREFIX/opt/curl/bin:$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
+    
+    eval "$(fzf --bash)"
 
     # Aliases
     alias tf='$BREW_PREFIX/bin/terraform'
     alias proxychains='$BREW_PREFIX/bin/proxychains4 -q'
     alias pip='$BREW_PREFIX/bin/pip3'
     alias python='$BREW_PREFIX/bin/python3'
+    alias ls='ls --color=auto'
 
     if pgrep -x "Xquartz" >/dev/null; then
         /opt/X11/bin/xhost >/dev/null
