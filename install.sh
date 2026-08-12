@@ -48,12 +48,14 @@ EOF
         jq
         kubernetes-cli
         nmap
+        powershell
         proxychains-ng
         sevenzip
         shellcheck
         tfenv
         tmux
         tree
+        wireguard-tools
     )
 
     # These aren't needed for Rosetta
@@ -64,20 +66,19 @@ EOF
         burp-suite
         docker
         firefox
+        gcloud-cli
         google-chrome
         gpg-suite
         iterm2
         little-snitch
         lm-studio
         obsidian
-        powershell
         signal
         slack
         spotify
         utm
         visual-studio-code
         windows-app
-        wireguard-tools
         wireshark
         xquartz
     )
