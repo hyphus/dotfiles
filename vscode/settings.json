@@ -2,7 +2,6 @@
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "editor.formatOnSave": true,
-    "lldb.suppressUpdateNotifications": true,
     "security.workspace.trust.enabled": false,
     "telemetry.telemetryLevel": "off",
     "[terraform-vars]": {
@@ -31,5 +30,18 @@
         "--max-line-length",
         "200"
     ],
-    "editor.inlayHints.enabled": "offUnlessPressed"
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "python.createEnvironment.trigger": "off",
+    "diffEditor.renderSideBySide": false,
+    "html.format.unformattedContentDelimiter": "<!--noformat-->",
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
+    "explorer.confirmPasteNative": false,
+    "chat.viewSessions.orientation": "stacked"
 }

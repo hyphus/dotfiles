@@ -43,6 +43,15 @@ function nocomment {
   grep -v '^$\|^\s*\#' "$1"
 }
 
+function venv() {
+    python3 -m venv .venv
+    # shellcheck disable=SC1091
+    source .venv/bin/activate
+
+    unalias pip
+    unalias python
+}
+
 # macOS specific
 if [[ $OSTYPE == 'darwin'* ]]; then
     # I want bash dammit

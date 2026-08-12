@@ -1,14 +1,25 @@
 #!/bin/bash
 
 set -eEuo pipefail
-trap 'error $? $LINENO' ERR 
 
-function error() {
-    echo "ERROR: $1 on line $2"
-    test -e /tmp/pw.sh && rm /tmp/pw.sh
+error() {
+    local exit_code=$1
+    local line=$2
+
+    echo "ERROR: command failed with exit code ${exit_code} on line ${line}" >&2
+    rm -f /tmp/pw.sh
+    exit "$exit_code"
 }
 
+trap 'error $? $LINENO' ERR
+
 if [[ $OSTYPE == 'darwin'* ]]; then 
+
+    # keep awake 
+    caffeinate -i &
+    CAFF_PID=$!
+    trap 'kill $CAFF_PID 2>/dev/null' EXIT
+
     if [[ ! -f "${HOME}/.ssh/config" ]]; then
     mkdir -p "${HOME}/.ssh/"
     cat << EOF >> "${HOME}/.ssh/config"
@@ -24,48 +35,49 @@ EOF
     fi
 
     BREW_FORMULAS=(
-        1password
         awscli
+        azure-cli
         bash
         bash-completion@2
         coreutils
         curl
         fzf
         grep
-        home-assistant
         htop
+        ipcalc
         jq
         kubernetes-cli
         nmap
         proxychains-ng
+        sevenzip
         shellcheck
-        terraform
+        tfenv
         tmux
         tree
-        whatmask
     )
 
     # These aren't needed for Rosetta
     BREW_CASKS=(
+        1password
         alt-tab
         brave-browser
         burp-suite
-        diffusionbee
-        discord
         docker
         firefox
         google-chrome
         gpg-suite
         iterm2
         little-snitch
-        ollama-app
-        rectangle
+        lm-studio
+        obsidian
+        powershell
         signal
         slack
         spotify
         utm
         visual-studio-code
         windows-app
+        wireguard-tools
         wireshark
         xquartz
     )
@@ -83,12 +95,13 @@ EOF
 
     export SUDO_ASKPASS=/tmp/pw.sh
     export NONINTERACTIVE=1
+    export HOMEBREW_NO_ENV_HINTS=1 
 
     # Brew for both M1 and Rosetta
     if [[ "$(uname -m)" == "arm64" ]]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-        /opt/homebrew/bin/brew install "${BREW_FORMULAS[@]}"
-        /opt/homebrew/bin/brew install --cask "${BREW_CASKS[@]}"
+        /opt/homebrew/bin/brew install -y "${BREW_FORMULAS[@]}"
+        /opt/homebrew/bin/brew install --cask -y "${BREW_CASKS[@]}"
 
         if ! pgrep -x "oahd" >/dev/null; then
             echo "Installing Rosetta..."
@@ -121,18 +134,46 @@ EOF
     cp ./iterm/com.googlecode.iterm2.plist "${HOME}/Library/Preferences/"
 
     # Set shells for root and user
-    echo "/opt/homebrew/bin/bash" | sudo -A tee -a /etc/shells
-    sudo -A chsh -s /opt/homebrew/bin/bash
-    sudo -A chsh -s /opt/homebrew/bin/bash "${USER}"
+    if ! grep -qxF '/opt/homebrew/bin/bash' /etc/shells; then
+        echo "/opt/homebrew/bin/bash" | sudo -A tee -a /etc/shells
+        sudo -A chsh -s /opt/homebrew/bin/bash
+        sudo -A chsh -s /opt/homebrew/bin/bash "${USER}"
+    fi
+
+    # VS Code settings
+    mkdir -p "${HOME}/Library/Application Support/Code/User"
+    cp ./vscode/settings.json "${HOME}/Library/Application Support/Code/User/settings.json"
+    /opt/homebrew/bin/code \
+        --install-extension docker.docker \
+        --install-extension donjayamanne.githistory \
+        --install-extension hashicorp.terraform \
+        --install-extension mechatroner.rainbow-csv \
+        --install-extension ms-azuretools.vscode-containers \
+        --install-extension ms-azuretools.vscode-docker \
+        --install-extension ms-python.autopep8 \
+        --install-extension ms-python.debugpy \
+        --install-extension ms-python.python \
+        --install-extension ms-python.vscode-pylance \
+        --install-extension ms-python.vscode-python-envs \
+        --install-extension ms-vscode-remote.remote-containers \
+        --install-extension ms-vscode-remote.remote-ssh \
+        --install-extension ms-vscode-remote.remote-ssh-edit \
+        --install-extension ms-vscode.cmake-tools \
+        --install-extension ms-vscode.hexeditor \
+        --install-extension ms-vscode.powershell \
+        --install-extension ms-vscode.remote-explorer \
+        --install-extension redhat.vscode-yaml \
+        --install-extension sebastienma.ansi-color-code \
+        --install-extension timonwong.shellcheck
     
     # Cleanup
     rm /tmp/pw.sh
 
-elif [ -f /etc/os-release ]; then
+elif [[ -f /etc/os-release ]]; then
     # shellcheck source=/dev/null
     . /etc/os-release
 
-    if [ "$ID_LIKE" == "debian" ]; then
+    if [[ "${ID_LIKE:-}" == "debian" || "$ID" == "debian" ]]; then
 
         export DEBIAN_FRONTEND=noninteractive
 
@@ -183,8 +224,10 @@ elif [ -f /etc/os-release ]; then
         fi
         
         # Docker
-        curl -fsSL https://get.docker.com | sudo /bin/bash
-        sudo usermod -aG docker "$(whoami)"
+        if ! command -v docker >/dev/null 2>&1; then
+            curl -fsSL https://get.docker.com | sudo /bin/bash
+            sudo usermod -aG docker "$(whoami)"
+        fi
     fi
 
     cp ./.bash_profile "${HOME}/.bash_profile"
@@ -200,18 +243,14 @@ mkdir -p "${HOME}/.config/bash"
 
 vim +'PlugInstall --sync' +qall &> /dev/null
 
-if [[ ! -f "${HOME}/.tmux/plugins/tpm" ]]; then
+if [[ ! -d "${HOME}/.tmux/plugins/tpm" ]]; then
     git clone --depth 1 https://github.com/tmux-plugins/tpm "${HOME}/.tmux/plugins/tpm"
 fi
 
 # TPM install requires tmux to be running
-tmux start-server
 tmux new-session -d
-sleep 1 # to give new-session time to init
-tmux source "${HOME}/.tmux.conf"
-"${HOME}"/.tmux/plugins/tpm/scripts/install_plugins.sh
+tmux source-file "${HOME}/.tmux.conf"
+"${HOME}/.tmux/plugins/tpm/scripts/install_plugins.sh"
 tmux kill-server
-
-# TODO: copy vscode/settings.json to the right location
 
 echo "Done."
